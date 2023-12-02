@@ -16,7 +16,7 @@ df = pd.read_csv(r'C:\Users\anaya\OneDrive\Desktop\Anay Masters\Intro to NLP\NLP
 
 
     
-user_song = int(input("Enter song index: "))
+user_song = int((input("Enter song index: ")))
 print(user_song)
 df.head(11)
 analyzer = SentimentIntensityAnalyzer()
