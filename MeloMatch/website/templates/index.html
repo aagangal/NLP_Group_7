@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,5 +36,52 @@
             {% endfor %}
         </ul>
     </div>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeloMatch</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<style>
+  .main-container {
+    background-image: url("{{ url_for('static', filename='at.gif') }}");
+  }
+</style>
+</head>
+<body>
+<div class="main-container">
+  <h1>MeloMatch</h1>
+  <div class="search-container">
+    <input type="text" id="searchBox" placeholder="Search...">
+    <button id="searchButton">Search</button>
+  </div>
+  <div id="outputTable">
+    <!-- The table will be filled with the search results -->
+  </div>
+</div>
+<script>
+document.getElementById('searchButton').addEventListener('click', function() {
+    fetch('/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({searchTerm: document.getElementById('searchBox').value})
+    })
+    .then(response => response.json())
+    .then(data => {
+        let table = '<table><tr><th>Title</th><th>Artist</th></tr>';
+        data.forEach(function(song) {
+            table += `<tr><td>${song.Title}</td><td>${song.Artist}</td></tr>`;
+        });
+        table += '</table>';
+        document.getElementById('outputTable').innerHTML = table;
+    });
+});
+</script>
 </body>
 </html>

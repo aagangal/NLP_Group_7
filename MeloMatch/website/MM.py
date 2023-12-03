@@ -1,3 +1,9 @@
+# data = [
+#         {"Title": "Song One", "Artist": "Artist One"},
+#         {"Title": "Song Two", "Artist": "Artist Two"}
+#     ]
+
+#RecommendationDF = df[['ALink', 'SName']]
 import numpy as np
 import pandas as pd 
 import nltk
@@ -12,12 +18,21 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 nltk.download('vader_lexicon')
 
-df = pd.read_csv(r'C:\Users\anaya\OneDrive\Desktop\Anay Masters\Intro to NLP\NLP_Group_7\FullyProcessedDataset.csv')
+df = pd.read_csv(r'/Users/rohan/Desktop/NLP_Group_7/FullyProcessedDataset.csv')
 
-    
-user_song = int((input("Enter song index: ")))
+tokenized_corpus = [text.split() for text in df['Lemmatized_Lyrics']]
+
+dictionary = corpora.Dictionary(tokenized_corpus)
+corpus = [dictionary.doc2bow(text) for text in tokenized_corpus]
+
+lda_model = gensim.models.LdaModel(corpus, num_topics=10, id2word=dictionary, passes=35, random_state = 42)
+
+song_topic_distribution = [lda_model[doc] for doc in corpus]
+
+user_song = int(input("Enter song index: "))
 print(user_song)
 df.head(11)
+
 analyzer = SentimentIntensityAnalyzer()
 
 def get_sentiment_score(lyrics):
@@ -34,7 +49,6 @@ for i in range(df.shape[0]):
 
 df['SSF'] = SSF_list
 df.head(21)
-
 
 tfidf_vectorizer = TfidfVectorizer()
 CSF_list = []
@@ -62,14 +76,14 @@ for i, song_dist in enumerate(song_topic_distribution):
 df['HDF'] = hellinger_distances
 df.head(21)
 
+# for i in range(df.shape[0]):
+#     if df['Cosine_Similarity'].iloc[i] >= 0.3:
+#         print(df['Cosine_Similarity'].iloc[i])
+
 df['SF'] = df['SSF'] + df['CSF'] + df['HDF']
-Recommendationdf = df.nsmallest(6,["SF"])
-Recommendationdf.drop(user_song, axis = 0, inplace = True)
+df = df.nsmallest(6,["SF"])
+df.drop(user_song, axis = 0, inplace = True)
 
-RecommendationDF = Recommendationdf[['ALink', 'SName']]
+RecommendationDF = df[['ALink', 'SName']]
 RecommendationDF.reset_index(inplace = True)
-
-return RecommendationDF
-
-
-
+print(RecommendationDF)
