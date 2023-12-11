@@ -1,54 +1,14 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Song Search</title>
-    <style>
-        body {
-            background: linear-gradient(to right, blue, green);
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .search-box {
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .search-button {
-            padding: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Search for Songs</h1>
-        <form method="POST">
-            <input type="text" name="search" class="search-box" placeholder="Enter song name...">
-            <button type="submit" class="search-button">Search</button>
-        </form>
-        <ul>
-            {% for song in songs %}
-                <li>{{ songs }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MeloMatch</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <style>
   .main-container {
     background-image: url("{{ url_for('static', filename='at.gif') }}");
+
   }
 </style>
 </head>
@@ -64,6 +24,7 @@
   </div>
 </div>
 <script>
+
 document.getElementById('searchButton').addEventListener('click', function() {
     fetch('/search', {
         method: 'POST',
@@ -74,14 +35,29 @@ document.getElementById('searchButton').addEventListener('click', function() {
     })
     .then(response => response.json())
     .then(data => {
-        let table = '<table><tr><th>Title</th><th>Artist</th></tr>';
-        data.forEach(function(song) {
-            table += `<tr><td>${song.Title}</td><td>${song.Artist}</td></tr>`;
+        let table = '<table border="1"><tr>';
+
+
+        for (let key in data[0]) {
+            table += <th>${key}</th>;
+        }
+        table += '</tr>';
+
+ 
+        data.forEach(row => {
+            table += '<tr>';
+            for (let key in row) {
+                table += <td>${row[key]}</td>;
+            }
+            table += '</tr>';
         });
+
         table += '</table>';
+
         document.getElementById('outputTable').innerHTML = table;
     });
 });
+
 </script>
 </body>
 </html>

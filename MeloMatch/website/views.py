@@ -1,48 +1,40 @@
-# from flask import Blueprint
-
-# views = Blueprint('views', __name__)
-
-# @views.route('/')
-# def home():
-#     return "<h1>MeloMatch</h1>"
-# from flask import Flask, render_template, request
-# import pandas as pd
-
-# views = Flask(__name__)
-
-# @views.route('/', methods=['GET', 'POST'])
-# def index():
-
-#     data = {'Name': ['Alice', 'Bob', 'Charlie'],
-#         'Age': [25, 30, 35],
-#         'City': ['New York', 'Paris', 'London']}
-#     df = pd.DataFrame(data)
-
-#     #songs = {}
-#     if request.method == 'POST':
-#         songs = df
-#     return render_template('index.html', songs=songs)
-
-# if __name__ == '__main__':
-#     views.run(debug=True)
-#import MM
-import MeloMatch
 from flask import Flask, render_template, request, jsonify
+import numpy as np
+import pandas as pd 
+import nltk
+import re
+import spacy
+from bs4 import BeautifulSoup
+from gensim import corpora, models
+import gensim
+from gensim.matutils import hellinger
+from scipy.spatial.distance import cosine
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+nltk.download('vader_lexicon')
 
-views = Flask(__name__)
+#from ipynb.fs.full.MM import RecommendSongs
+from ipynb.fs.full.newtest import RecommendSongs, song_topic_distribution
+
+views = Flask(name)
 
 @views.route('/')
 def index():
+
     return render_template('index.html')
 
-@views.route('/search', methods=['POST'])
-def search():
-    #Dummy data to simulate a response from a Python script
-    # data = [
-    #     {"Title": "Song One", "Artist": "Artist One"},
-    #     {"Title": "Song Two", "Artist": "Artist Two"}
-    # ]
-    return jsonify(MeloMatch.RecommendationDF)
 
-if __name__ == '__main__':
+@views.route('/search', methods=['GET', 'POST'])
+def search():
+
+    data = request.get_json()
+    searchTerm = data['searchTerm']
+
+    finalOutput = RecommendSongs(song_topic_distribution, searchTerm)
+
+    return jsonify(finalOutput.to_dict(orient='records'))
+
+
+if name == 'main':
     views.run(debug=True)
