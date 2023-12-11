@@ -15,7 +15,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 nltk.download('vader_lexicon')
 
 #from ipynb.fs.full.MM import RecommendSongs
-from ipynb.fs.full.newtest import RecommendSongs, song_topic_distribution
+from ipynb.fs.full.MM import RecommendSongs, song_topic_distribution
 
 views = Flask(name)
 
